@@ -9,7 +9,6 @@ Scoured the Internet and was unable to find a script based on PyQt6 (even though
 PyQt6 — python-vlc
 
 pip install PyQt6
-pip install python-vlc
 
 **Note: Tested on Python 3.10 and python-vlc 3.0.18122**
 **Note: Only for Windows-based systems - Sorry!**
