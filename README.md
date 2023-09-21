@@ -16,7 +16,7 @@ python -m venv .
 ```
 python -m pip install --upgrade pip
 ```
-**Install Player Choice**
+**Install Player of Choice**
 * Pyside6-based player
 ```
 pip install PySide6==6.5.2
