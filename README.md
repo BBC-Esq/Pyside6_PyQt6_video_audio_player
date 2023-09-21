@@ -27,7 +27,7 @@ pip install PyQt6==6.5.2
 ```
 **Install VLC Python Library**
 ```
-pip install python-vlc
+pip install python-vlc==3.0.18122
 ```
 
 # Run Program
