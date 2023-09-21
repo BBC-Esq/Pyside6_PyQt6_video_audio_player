@@ -1,25 +1,43 @@
-## Summary:
+# PySide6 and PyQt6 Video/Audio Player
+Two simple, lightweight media players created with Pyside6 and PyQt6.  Run standalone or incorporate into another program.
 
-A light-weight video and audio player using PyQt6 for the GUI and VLC to play.
+# Installation
+> First, make sure you're running [Python 3.10+](https://www.python.org/downloads/release/python-31011/) and have [VLC Player](https://www.videolan.org/vlc/) installed.
+  
+**Download the latest release, unzip it, and place the two .py files anywhere on your computer. Create a command prompt in the folder you put the files and create a virtual environment:**
+```
+python -m venv .
+```
+**Activate the virtual environment:**
+```
+.\Scripts\activate
+```
+**Upgrade pip**
+```
+python -m pip install --upgrade pip
+```
+**Install Player Choice**
+* Pyside6-based player
+```
+pip install PySide6==6.5.2
+```
+* PyQt6-based player
+```
+pip install PyQt6==6.5.2
+```
+**Install VLC Python Library**
+```
+pip install python-vlc
+```
 
-Scoured the Internet and was unable to find a script based on PyQt6 (even though Riverbank Computing's website says it's possible).  Found a couple based on PyQt5 but I still couldn't successfully convert to PyQt6.  Just FYI, the most recent "PySide" implementation of the "QT framework" (PyQt being the other if you're unfamiliar) does have a way.  However, I needed one based on PyQt6 because my other scripts use PyQt6...hence my script that uses VLC.
+# Run Program
+**Pyside6-based player**
+```
+media_player_pyside6.py
+```
+**PyQt6-based player**
+```
+media_player_pyqt6.py
+```
 
-## Requirements:
-
-PyQt6 — python-vlc
-
-**Note: Tested on Python 3.10 and python-vlc 3.0.18122**
-
-## Instructions:
-
-1. Using the command prompt, type "python gui_viewer_media.py" -- OR
-2. Put both the python file and batch file in the computer system PATH and open a command prompt anywhere and type "python_player."  Research online if you don't know how to make sure files are within a computer's "PATH".
-
-## Summary of Scripts:
-
-| Script                   | Description                                                               |
-|--------------------------|---------------------------------------------------------------------------|
-| "gui_viewer_media.py"    | Loads and runs the player, which can play both video and audio            |
-| "python_player.bat"      | Bootstraps the python script so you can run it in any active directory    |
-
-Thank you for visiting!
+## Please STAR if you found it useful so other people can find the repository easier!
