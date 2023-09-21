@@ -33,11 +33,11 @@ pip install python-vlc
 # Run Program
 **Pyside6-based player**
 ```
-media_player_pyside6.py
+python media_player_pyside6.py
 ```
 **PyQt6-based player**
 ```
-media_player_pyqt6.py
+python media_player_pyqt6.py
 ```
 
 ## Please STAR if you found it useful so other people can find the repository easier!
