@@ -80,6 +80,10 @@ class MediaPlayer(QMainWindow):
         self.timer.setInterval(100)
         self.timer.timeout.connect(self.update_ui)
 
+        self.volumeslider.setValue(50)
+        self.mediaplayer.audio_set_volume(50)
+
+
     def play_pause(self):
         if self.mediaplayer.is_playing():
             self.mediaplayer.pause()
@@ -118,6 +122,7 @@ class MediaPlayer(QMainWindow):
 
     def set_volume(self, volume):
         self.mediaplayer.audio_set_volume(volume)
+
 
     def set_position(self, position):
         pos = position / 1000.0
