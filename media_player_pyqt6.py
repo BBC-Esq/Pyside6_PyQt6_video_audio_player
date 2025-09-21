@@ -112,9 +112,20 @@ class MediaPlayer(QMainWindow):
 
         self.media.parse()
 
-        self.setWindowTitle(self.media.get_meta(0))
+        # Get title safely
+        title = self.media.get_meta(vlc.Meta.Title) if hasattr(vlc, 'Meta') else self.media.get_meta(0)
+        if title:
+            self.setWindowTitle(title)
+        else:
+            self.setWindowTitle(os.path.basename(filename))
 
-        self.mediaplayer.set_hwnd(int(self.videoframe.winId()))
+        # Platform-specific video embedding
+        if sys.platform.startswith('linux'):
+            self.mediaplayer.set_xwindow(int(self.videoframe.winId()))
+        elif sys.platform == "win32":
+            self.mediaplayer.set_hwnd(int(self.videoframe.winId()))
+        elif sys.platform == "darwin":
+            self.mediaplayer.set_nsobject(int(self.videoframe.winId()))
 
         self.play_pause()
 
@@ -137,6 +148,12 @@ class MediaPlayer(QMainWindow):
                 self.stop()
 
 def main():
+    # For Linux users with Wayland issues, force X11 backend
+    if sys.platform.startswith('linux'):
+        # Try to force X11 if having Wayland issues
+        if 'QT_QPA_PLATFORM' not in os.environ:
+            os.environ['QT_QPA_PLATFORM'] = 'xcb'
+    
     app = QApplication(sys.argv)
     player = MediaPlayer()
     player.show()
