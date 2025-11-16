@@ -1,43 +1,47 @@
-# PySide6 and PyQt6 Video/Audio Player
-Two simple, lightweight media players created with Pyside6 and PyQt6.  Run standalone or incorporate into another program.
+# Media Player - PySide6 & PyQt6
 
-# Installation
-> First, make sure you're running [Python 3.10+](https://www.python.org/downloads/release/python-31011/) and have [VLC Player](https://www.videolan.org/vlc/) installed.
-  
-**Download the latest release, unzip it, and place the two .py files anywhere on your computer. Create a command prompt in the folder you put the files and create a virtual environment:**
-```
-python -m venv .
-```
-**Activate the virtual environment:**
-```
-.\Scripts\activate
-```
-**Upgrade pip**
-```
+Lightweight, cross-platform media players built with PySide6 and PyQt6. Use standalone or integrate into your own applications.
+
+## Prerequisites
+
+- [Python 3.10+](https://www.python.org/downloads/)
+- [VLC Media Player](https://www.videolan.org/vlc/)
+
+## Quick Start
+
+### 1. Setup Environment
+```bash
+python -m venv venv
+venv\Scripts\activate          # Windows
+source venv/bin/activate       # macOS/Linux
 python -m pip install --upgrade pip
 ```
-**Install Player of Choice**
-* Pyside6-based player
-```
-pip install PySide6
-```
-* PyQt6-based player
-```
-pip install PyQt6
-```
-**Install VLC Python Library**
-```
-pip install python-vlc
+
+### 2. Install Dependencies
+
+Choose your preferred framework:
+```bash
+pip install PySide6 python-vlc     # For PySide6 version
+# OR
+pip install PyQt6 python-vlc       # For PyQt6 version
 ```
 
-# Run Program
-**Pyside6-based player**
-```
-python media_player_pyside6.py
-```
-**PyQt6-based player**
-```
-python media_player_pyqt6.py
+### 3. Run
+```bash
+python media_player_pyside6.py     # PySide6 version
+# OR
+python media_player_pyqt6.py       # PyQt6 version
 ```
 
-## Please STAR if you found it useful so other people can find the repository easier!
+## Features
+
+- Full cross-platform support (Windows, macOS, Linux)
+- Intuitive playback controls
+- Seek by clicking or dragging
+- Volume control
+- Time display
+- Clean, minimal interface
+
+---
+
+**Found this useful? Please ⭐ star the repository to help others discover it!**
