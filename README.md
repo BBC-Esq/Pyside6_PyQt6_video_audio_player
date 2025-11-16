@@ -19,15 +19,15 @@ python -m pip install --upgrade pip
 **Install Player of Choice**
 * Pyside6-based player
 ```
-pip install PySide6==6.5.2
+pip install PySide6
 ```
 * PyQt6-based player
 ```
-pip install PyQt6==6.5.2
+pip install PyQt6
 ```
 **Install VLC Python Library**
 ```
-pip install python-vlc==3.0.18122
+pip install python-vlc
 ```
 
 # Run Program
