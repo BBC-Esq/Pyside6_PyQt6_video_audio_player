@@ -9,6 +9,16 @@ if os.name == 'nt':
     import pythoncom
     pythoncom.CoInitialize()
 
+class ClickableSlider(QSlider):
+    def mousePressEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            value = QSlider.minimum(self) + ((QSlider.maximum(self) - QSlider.minimum(self)) * event.position().x()) / self.width()
+            self.setValue(int(value))
+            self.sliderPressed.emit()
+            self.sliderMoved.emit(int(value))
+            self.sliderReleased.emit()
+        super().mousePressEvent(event)
+
 class MediaPlayer(QMainWindow):
 
     def __init__(self, master=None):
@@ -38,7 +48,7 @@ class MediaPlayer(QMainWindow):
         self.videoframe.setPalette(self.palette)
         self.videoframe.setAutoFillBackground(True)
 
-        self.positionslider = QSlider(Qt.Orientation.Horizontal, self)
+        self.positionslider = ClickableSlider(Qt.Orientation.Horizontal, self)
         self.positionslider.setToolTip("Position")
         self.positionslider.setMaximum(1000)
         self.positionslider.sliderMoved.connect(self.set_position)
@@ -72,7 +82,7 @@ class MediaPlayer(QMainWindow):
         self.volumeslider.valueChanged.connect(self.set_volume)
 
         self.vboxlayout = QVBoxLayout()
-        self.vboxlayout.addWidget(self.videoframe)
+        self.vboxlayout.addWidget(self.videoframe, 1)
         self.vboxlayout.addWidget(self.positionslider)
         self.vboxlayout.addWidget(self.timelabel)
         self.vboxlayout.addLayout(self.hbuttonbox)
