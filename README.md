@@ -11,7 +11,7 @@ Lightweight, cross-platform media players built with PySide6. Use standalone or 
 
 ### 1. Setup Environment
 ```
-python -m venv venv
+python -m venv
 ```
 
 ```
