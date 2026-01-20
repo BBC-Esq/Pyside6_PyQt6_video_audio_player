@@ -9,31 +9,23 @@ Lightweight, cross-platform media players built with PySide6. Use standalone or 
 
 ## Quick Start
 
-### 1. Setup Environment
 ```
-python -m venv
+python -m venv .
 ```
 
 ```
-venv\Scripts\activate
+.\Scripts\activate
 ```
-> Windows
-```
-source venv/bin/activate
-```
-> MacOS/Linux
+
 ```
 python -m pip install --upgrade pip
 ```
 
-### 2. Install Dependencies
-
-```bash
+```
 pip install pyside6 python-vlc
 ```
 
-### 3. Run
-```bash
+```
 python media_player_pyside6.py
 ```
 
