@@ -15,13 +15,13 @@ python -m venv venv
 ```
 
 ```
-venv\Scripts\activate          # Windows
+venv\Scripts\activate
 ```
-
+> Windows
 ```
-source venv/bin/activate       # macOS/Linux
+source venv/bin/activate
 ```
-
+> MacOS/Linux
 ```
 python -m pip install --upgrade pip
 ```
