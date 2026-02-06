@@ -1,7 +1,7 @@
 import os
 import sys
 from PySide6.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QApplication, QSlider, 
+    QMainWindow, QWidget, QVBoxLayout, QApplication, QSlider,
     QPushButton, QFileDialog, QHBoxLayout, QFrame, QLabel, QMessageBox,
     QStyle, QStyleOptionSlider
 )
@@ -61,24 +61,25 @@ class ClickableSlider(QSlider):
 
 class MediaPlayer(QMainWindow):
 
-    def __init__(self, master=None):
-        super().__init__(master)
+    def __init__(self):
+        super().__init__()
         self.setWindowTitle("Media Player")
         self.setAcceptDrops(True)
 
-        try:
-            self.instance = vlc.Instance('--quiet')
-            self.mediaplayer = self.instance.media_player_new()
-        except Exception as e:
-            QMessageBox.critical(self, "Error", f"Failed to initialize VLC: {str(e)}")
-            sys.exit(1)
-
+        self.instance = None
+        self.mediaplayer = None
         self.media = None
         self.is_paused = False
         self.is_dragging = False
         self.is_muted = False
         self.previous_volume = 50
         self.media_event_attached = False
+
+        try:
+            self.instance = vlc.Instance('--quiet')
+            self.mediaplayer = self.instance.media_player_new()
+        except Exception as e:
+            raise RuntimeError(f"Failed to initialize VLC: {str(e)}")
 
         self.vlc_events = VLCEventHandler()
         self.vlc_events.end_reached.connect(self.on_end_reached)
@@ -120,6 +121,7 @@ class MediaPlayer(QMainWindow):
 
         self.videoframe = QFrame()
         self.videoframe.setMinimumSize(320, 240)
+        self.videoframe.installEventFilter(self)
 
         self.palette = self.videoframe.palette()
         self.palette.setColor(QPalette.Window, QColor(0, 0, 0))
@@ -235,7 +237,11 @@ class MediaPlayer(QMainWindow):
             self.overlay.setGeometry(self.videoframe.rect())
 
     def eventFilter(self, obj, event):
-        if obj == self.overlay:
+        if obj == self.videoframe:
+            if event.type() == QEvent.Type.Resize:
+                self.overlay.setGeometry(self.videoframe.rect())
+                return False
+        elif obj == self.overlay:
             if event.type() == QEvent.Type.MouseButtonDblClick:
                 self.toggle_fullscreen()
                 return True
@@ -307,13 +313,13 @@ class MediaPlayer(QMainWindow):
             self.media = self.instance.media_new(filename)
             self.mediaplayer.set_media(self.media)
 
-            self.media.parse_with_options(vlc.MediaParseFlag.local, 0)
-
             self.setWindowTitle(os.path.basename(filename))
 
             event_manager = self.media.event_manager()
             event_manager.event_attach(vlc.EventType.MediaParsedChanged, self.on_media_parsed)
             self.media_event_attached = True
+
+            self.media.parse_with_options(vlc.MediaParseFlag.local, 0)
 
             if sys.platform == "darwin":
                 self.mediaplayer.set_nsobject(int(self.videoframe.winId()))
@@ -334,21 +340,19 @@ class MediaPlayer(QMainWindow):
             QMessageBox.critical(self, "Error", f"Failed to load media file: {str(e)}")
 
     def on_media_parsed(self, event):
-        if self.media:
-            title = self.media.get_meta(vlc.Meta.Title)
+        media = self.media
+        if media:
+            try:
+                title = media.get_meta(vlc.Meta.Title)
+            except Exception:
+                return
             if title:
                 QTimer.singleShot(0, lambda t=title: self.setWindowTitle(t))
 
     def set_volume(self, volume):
         self.mediaplayer.audio_set_volume(volume)
         self.volumelabel.setText(f"{volume}%")
-        if volume == 0:
-            self.mutebutton.setText("\U0001F507")
-            self.is_muted = True
-        else:
-            self.mutebutton.setText("\U0001F50A")
-            self.is_muted = False
-            self.previous_volume = volume
+        self.mutebutton.setText("\U0001F507" if volume == 0 else "\U0001F50A")
 
     def adjust_volume(self, delta):
         current = self.volumeslider.value()
@@ -358,12 +362,12 @@ class MediaPlayer(QMainWindow):
     def toggle_mute(self):
         if self.is_muted:
             self.volumeslider.setValue(self.previous_volume)
-            self.mutebutton.setText("\U0001F50A")
             self.is_muted = False
         else:
-            self.previous_volume = self.volumeslider.value()
+            current = self.volumeslider.value()
+            if current > 0:
+                self.previous_volume = current
             self.volumeslider.setValue(0)
-            self.mutebutton.setText("\U0001F507")
             self.is_muted = True
 
     def skip(self, milliseconds):
@@ -377,8 +381,9 @@ class MediaPlayer(QMainWindow):
         self.is_dragging = True
 
     def slider_released(self):
-        self.is_dragging = False
-        self.set_position()
+        if self.is_dragging:
+            self.is_dragging = False
+            self.set_position()
 
     def set_position(self):
         pos = self.positionslider.value()
@@ -409,7 +414,7 @@ class MediaPlayer(QMainWindow):
         else:
             return f"{minutes:02d}:{seconds:02d}"
 
-    def toggle_fullscreen(self, event=None):
+    def toggle_fullscreen(self):
         if self.isFullScreen():
             self.exit_fullscreen()
         else:
@@ -438,15 +443,21 @@ class MediaPlayer(QMainWindow):
             self.load_file(urls[0].toLocalFile())
 
     def closeEvent(self, event):
-        self.hide_timer.stop()
-        self.timer.stop()
-        self.detach_player_events()
-        self.mediaplayer.stop()
-        self.detach_media_events()
-        if self.media:
-            self.media.release()
-        self.mediaplayer.release()
-        self.instance.release()
+        try:
+            self.hide_timer.stop()
+            self.timer.stop()
+            self.detach_player_events()
+            if self.mediaplayer:
+                self.mediaplayer.stop()
+            self.detach_media_events()
+            if self.media:
+                self.media.release()
+            if self.mediaplayer:
+                self.mediaplayer.release()
+            if self.instance:
+                self.instance.release()
+        except Exception:
+            pass
         event.accept()
 
 
@@ -470,7 +481,12 @@ def main():
     dark_palette.setColor(QPalette.ColorRole.HighlightedText, QColor(0, 0, 0))
     app.setPalette(dark_palette)
 
-    player = MediaPlayer()
+    try:
+        player = MediaPlayer()
+    except RuntimeError as e:
+        QMessageBox.critical(None, "Error", str(e))
+        sys.exit(1)
+
     player.show()
     player.resize(640, 480)
     sys.exit(app.exec())
