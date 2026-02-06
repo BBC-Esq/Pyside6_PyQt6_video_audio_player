@@ -231,6 +231,14 @@ class MediaPlayer(QMainWindow):
         QShortcut(QKeySequence(Qt.Key.Key_Escape), self, self.exit_fullscreen)
         QShortcut(QKeySequence(Qt.Key.Key_F), self, self.toggle_fullscreen)
 
+    def wheelEvent(self, event):
+        delta = event.angleDelta().y()
+        if delta > 0:
+            self.adjust_volume(5)
+        elif delta < 0:
+            self.adjust_volume(-5)
+        event.accept()
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         if hasattr(self, 'overlay'):
